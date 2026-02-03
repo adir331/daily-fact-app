@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: quote-container
-        image: adir1306/daily-fact-app:latest  # <--- המקור החדש בענן
+        image: adir1306/daily-fact-app:v6  # <--- המקור החדש בענן
         imagePullPolicy: Always  # <--- תמיד תבדוק אם יש גרסה חדשה בענן
         ports:
         - containerPort: 5000
