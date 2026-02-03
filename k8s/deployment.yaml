@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: quote-deployment
 spec:
-  replicas: 3  # אנחנו מבקשים 2 עותקים שירוצו במקביל
+  replicas: 5  # <--- שינוי כוח אש: עולים ל-5 עותקים!
   selector:
     matchLabels:
       app: quote-app
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: quote-container
-        image: my-quote-service:v5
-        imagePullPolicy: IfNotPresent # חשוב: אומר ל-K8s לא לחפש באינטרנט אלא להשתמש במה שבנינו מקומית
+        image: adir1306/daily-fact-app:latest  # <--- המקור החדש בענן
+        imagePullPolicy: Always  # <--- תמיד תבדוק אם יש גרסה חדשה בענן
         ports:
         - containerPort: 5000
