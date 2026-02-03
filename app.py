@@ -3,12 +3,11 @@ import requests
 import os
 from googletrans import Translator
 import random
+import math
 
 app = Flask(__name__)
 translator = Translator()
 
-# קריאת משתנים משתני הסביבה (שהוזרקו ע"י קוברנטיס)
-# אם לא קיים - יש ערך ברירת מחדל
 FACT_API_URL = os.getenv("FACT_API_URL", "https://uselessfacts.jsph.pl/random.json?language=en")
 DEFAULT_LANG = os.getenv("DEFAULT_LANG", "en")
 
@@ -18,11 +17,11 @@ def index():
 
 @app.route('/api/fact')
 def get_fact():
-    target_lang = request.args.get('lang', DEFAULT_LANG) # שימוש בברירת המחדל מהקונפיג
+    target_lang = request.args.get('lang', DEFAULT_LANG)
     category = request.args.get('category', 'random')
     
     try:
-        response = requests.get(FACT_API_URL, timeout=5) # שימוש בכתובת מהקונפיג
+        response = requests.get(FACT_API_URL, timeout=5)
         fact_en = response.json().get('text')
         
         if target_lang != 'en':
@@ -50,7 +49,22 @@ def get_fact():
         "status": status
     })
 
-# הוספת בדיקת בריאות פשוטה (בשביל ה-Probes)
+# --- הנשק הסודי: בדיקת עומס ---
+@app.route('/api/stress')
+def stress_cpu():
+    # לולאה שנועדה להעמיס על המעבד באופן מלאכותי
+    x = 0
+    # רץ 3 מיליון פעמים כדי לגרום למעבד להזיע
+    for i in range(3000000): 
+        x += math.sqrt(i)
+    
+    return jsonify({
+        "status": "Stress test completed!",
+        "result": x,
+        "pod": os.getenv("HOSTNAME", "localhost")
+    })
+# -----------------------------
+
 @app.route('/health')
 def health():
     return jsonify({"status": "healthy"}), 200
