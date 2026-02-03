@@ -1,0 +1,12 @@
+# Python garbage
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# Mac system files
+.DS_Store
+
+# IDE files
+.vscode/
+.idea/

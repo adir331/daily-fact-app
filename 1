@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quote-deployment
+spec:
+  replicas: 2  # אנחנו מבקשים 2 עותקים שירוצו במקביל
+  selector:
+    matchLabels:
+      app: quote-app
+  template:
+    metadata:
+      labels:
+        app: quote-app
+    spec:
+      containers:
+      - name: quote-container
+        image: my-quote-service:v2
+        imagePullPolicy: IfNotPresent # חשוב: אומר ל-K8s לא לחפש באינטרנט אלא להשתמש במה שבנינו מקומית
+        ports:
+        - containerPort: 5000

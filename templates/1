@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Fact Generator</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #00ff41;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            border: 2px solid #00ff41;
+            padding: 40px;
+            box-shadow: 0 0 20px #00ff41;
+            text-align: center;
+            max-width: 600px;
+            background: rgba(0, 20, 0, 0.8);
+            border-radius: 10px;
+        }
+        h1 { text-shadow: 0 0 10px #00ff41; }
+        .btn {
+            background: transparent;
+            color: #00ff41;
+            border: 1px solid #00ff41;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        .btn:hover { background: #00ff41; color: black; box-shadow: 0 0 20px #00ff41; }
+        #content { margin-top: 20px; min-height: 100px; }
+        .meta { font-size: 0.8rem; color: #555; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>// DEV_OPS_AI_V2.0</h1>
+        <div id="content">
+            <p>Initializing neural network...</p>
+        </div>
+        <button class="btn" onclick="fetchFact()">GENERATE DATA</button>
+        <div class="meta">Served by Pod: <span id="pod-name">{{ hostname }}</span></div>
+    </div>
+
+    <script>
+        async function fetchFact() {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = "Processing...";
+            
+            const response = await fetch('/api/fact');
+            const data = await response.json();
+            
+            contentDiv.innerHTML = `
+                <p style="color: #ff0055;">> ${data.comment}</p>
+                <p style="font-size: 1.2em;">"${data.fact}"</p>
+            `;
+            document.getElementById('pod-name').innerText = data.pod;
+        }
+    </script>
+</body>
+</html>
