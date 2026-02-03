@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  # הגדרות שאפשר לשנות בלי לבנות אימג' מחדש
+  FACT_API_URL: "https://uselessfacts.jsph.pl/random.json?language=en"
+  DEFAULT_LANG: "en"
+  APP_ENV: "production"

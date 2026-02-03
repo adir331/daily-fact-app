@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: quote-deployment
 spec:
-  replicas: 2  # <--- שינוי כוח אש: עולים ל-5 עותקים!
+  replicas: 1
   selector:
     matchLabels:
       app: quote-app
@@ -14,7 +14,28 @@ spec:
     spec:
       containers:
       - name: quote-container
-        image: adir1306/daily-fact-app:latest  # <--- המקור החדש בענן
-        imagePullPolicy: Always  # <--- תמיד תבדוק אם יש גרסה חדשה בענן
+        image: adir1306/daily-fact-app:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
+        
+        # 1. חיבור המשתנים מה-ConfigMap
+        envFrom:
+        - configMapRef:
+            name: app-config
+
+        # 2. בדיקת מוכנות (האם האפליקציה עלתה ומוכנה לקבל טראפיק?)
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+        # 3. בדיקת חיות (האם האפליקציה נתקעה וצריך להרוג אותה?)
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 20
