@@ -1,0 +1,25 @@
+name: CI Build Check
+
+# מתי להפעיל את הרובוט?
+on:
+  push:
+    branches: [ "main" ]
+
+# מה הרובוט צריך לעשות?
+jobs:
+  build-test:
+    runs-on: ubuntu-latest  # מחשב של גיטהאב שיריץ את הבדיקה
+    
+    steps:
+    # שלב 1: הורדת הקוד מהמאגר למחשב הווירטואלי
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # שלב 2: הקמת סביבת דוקר
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    # שלב 3: ניסיון לבנות את האימג' (בלי לדחוף לשום מקום כרגע)
+    # המטרה: רק לוודא שהקוד תקין ושאפשר לבנות אותו
+    - name: Build Docker Image
+      run: docker build -t my-quote-service:test .
