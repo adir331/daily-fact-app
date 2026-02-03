@@ -2,128 +2,249 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Daily Fact Boutique</title>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;700&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fact Genius</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Rubik:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+    
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            --card-bg: #ffffff;
-            --primary-color: #6C5CE7;
-            --text-color: #2d3436;
-            --secondary-text: #636e72;
+            --primary-gold: #D4AF37;
+            --secondary-gold: #AA8C2C;
+            --dark-bg: #1a1a1a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
         }
 
         body {
-            background: linear-gradient(to right, #CFDEF3, #E0EAFC);
-            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            background-image: radial-gradient(circle at 50% 0%, #2a2a2a 0%, #111111 100%);
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            color: var(--text-color);
+            overflow: hidden;
         }
 
-        .card {
-            background: var(--card-bg);
+        .container {
+            position: relative;
             width: 90%;
-            max-width: 600px;
-            padding: 50px;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            max-width: 500px;
             text-align: center;
+            z-index: 10;
+        }
+
+        /* כרטיס הזכוכית */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             transition: transform 0.3s ease;
         }
 
-        .card:hover { transform: translateY(-5px); }
+        .glass-card:hover {
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        /* אנימציית הרובוט */
+        .anim-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+        }
 
         h1 {
             font-weight: 700;
-            letter-spacing: -1px;
-            margin-bottom: 10px;
-            color: var(--primary-color);
+            font-size: 2rem;
+            margin: 0;
+            background: linear-gradient(to right, #fff, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
-            color: var(--secondary-text);
+            color: var(--text-muted);
             font-size: 0.9rem;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        #fact-area {
-            min-height: 120px;
+        /* אזור העובדה */
+        #fact-box {
+            min-height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
-            font-weight: 500;
+            font-size: 1.25rem;
             line-height: 1.6;
-            margin-bottom: 40px;
-            color: #444;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
         }
 
-        button {
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
+        /* פקדים */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        select {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            font-family: inherit;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.2);
-            background-color: var(--primary-color);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        select:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        select option {
+            background: #222;
             color: white;
         }
 
-        button:hover {
-            background-color: #5649c0;
-            box-shadow: 0 15px 25px rgba(108, 92, 231, 0.4);
+        /* כפתור הזהב */
+        .btn-gold {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: #1a1a1a;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .meta-info {
-            margin-top: 40px;
+        .btn-gold:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-gold:active {
+            transform: scale(0.98);
+        }
+
+        .footer {
+            margin-top: 30px;
             font-size: 0.75rem;
-            color: #b2bec3;
-            border-top: 1px solid #f1f2f6;
-            padding-top: 20px;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .loading {
+            opacity: 0.5;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>Did You Know?</h1>
-        <div class="subtitle">Daily Intelligence</div>
 
-        <div id="fact-area">
-            Click the button to learn something new.
-        </div>
+    <div class="container">
+        <div class="glass-card">
+            
+            <div class="anim-container">
+                <dotlottie-player src="https://lottie.host/4b8273c5-680c-4384-9543-8533de0739c9/2sX6qQp5qj.json" background="transparent" speed="1" style="width: 100%; height: 100%;" loop autoplay></dotlottie-player>
+            </div>
 
-        <button onclick="fetchFact()">Inspire Me</button>
+            <h1>AI Insight</h1>
+            <div class="subtitle">Powered by Kubernetes</div>
 
-        <div class="meta-info">
-            Served by Pod: <span id="pod-name">{{ hostname }}</span>
+            <div class="controls">
+                <select id="lang-select">
+                    <option value="en">English</option>
+                    <option value="he">עברית</option>
+                    <option value="es">Español</option>
+                    <option value="ja">日本語 (Japanese)</option>
+                    <option value="fr">Français</option>
+                </select>
+                <select id="category-select">
+                    <option value="random">Random</option>
+                    <option value="tech">Technology</option>
+                    <option value="science">Science</option>
+                    <option value="space">Space</option>
+                </select>
+            </div>
+
+            <div id="fact-box">
+                Ready to expand your mind?
+            </div>
+
+            <button class="btn-gold" onclick="fetchFact()" id="generate-btn">
+                <span>GENERATE INSIGHT</span>
+            </button>
+
+            <div class="footer">
+                Pod: <span id="pod-name">{{ hostname }}</span> | Ver: 6.0 AI
+            </div>
         </div>
     </div>
 
     <script>
         async function fetchFact() {
-            const contentDiv = document.getElementById('fact-area');
-            contentDiv.style.opacity = '0.5';
+            const btn = document.getElementById('generate-btn');
+            const factBox = document.getElementById('fact-box');
+            const lang = document.getElementById('lang-select').value;
+            const category = document.getElementById('category-select').value;
             
+            // UI Loading State
+            btn.classList.add('loading');
+            btn.innerHTML = '<span>PROCESSING...</span>';
+            factBox.style.opacity = '0.5';
+
             try {
-                // אין צורך יותר בפרמטר שפה
-                const response = await fetch('/api/fact');
+                // קריאה לשרת שלנו
+                const response = await fetch(`/api/fact?lang=${lang}&category=${category}`);
                 const data = await response.json();
                 
-                contentDiv.innerText = data.fact;
+                // עדכון התוכן
+                factBox.innerText = data.fact;
                 document.getElementById('pod-name').innerText = data.pod;
+
+                // טיפול בעברית (יישור לימין)
+                if (lang === 'he') {
+                    factBox.style.direction = 'rtl';
+                    factBox.style.fontFamily = "'Rubik', sans-serif";
+                } else {
+                    factBox.style.direction = 'ltr';
+                    factBox.style.fontFamily = "'Outfit', sans-serif";
+                }
+
             } catch (e) {
-                contentDiv.innerText = "Error loading data.";
+                factBox.innerText = "System Malfunction. Retrying...";
             }
-            
-            contentDiv.style.opacity = '1';
+
+            // Reset UI
+            btn.classList.remove('loading');
+            btn.innerHTML = '<span>GENERATE INSIGHT</span>';
+            factBox.style.opacity = '1';
         }
     </script>
 </body>
