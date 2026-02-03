@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Fact Genius</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Rubik:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
     
     <style>
-        /* משתנים חדשים לערכת נושא בהירה */
+        /* משתנים לערכת נושא בהירה */
         :root {
             --bg-color: #f0f2f5;
             --card-bg: #ffffff;
@@ -39,7 +38,7 @@
             text-align: center;
         }
 
-        /* כרטיס בהיר בסגנון ניומרפיזם עדין */
+        /* כרטיס בהיר בסגנון ניומרפיזם */
         .light-card {
             background: var(--card-bg);
             border-radius: 30px;
@@ -47,10 +46,24 @@
             box-shadow: var(--shadow-light);
         }
 
-        .anim-container {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 15px;
+        /* עיצוב חדש ללוגו (במקום האנימציה) */
+        .logo-wrapper {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: var(--bg-color);
+            border-radius: 50%;
+            padding: 20px;
+            box-shadow: var(--shadow-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
         }
 
         h1 {
@@ -68,7 +81,7 @@
             text-transform: uppercase;
         }
 
-        /* אזור התמונה החדש */
+        /* אזור התמונה המתחלפת */
         #fact-image-container {
             width: 100%;
             height: 200px;
@@ -76,16 +89,18 @@
             overflow: hidden;
             margin-bottom: 20px;
             box-shadow: var(--shadow-light);
-            display: none; /* מוסתר בהתחלה */
+            display: none; /* מוסתר עד שיש תמונה */
+            background-color: #eee;
         }
 
         #fact-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: opacity 0.3s;
         }
 
-        /* אזור העובדה */
+        /* אזור הטקסט */
         #fact-box {
             min-height: 80px;
             display: flex;
@@ -126,7 +141,7 @@
             box-shadow: var(--shadow-inset);
         }
 
-        /* כפתור בהיר */
+        /* כפתור הפעולה */
         .btn-bright {
             width: 100%;
             padding: 18px;
@@ -151,6 +166,10 @@
             box-shadow: 0 6px 20px rgba(79, 209, 197, 0.4);
         }
 
+        .btn-bright:active {
+            transform: scale(0.98);
+        }
+
         .footer {
             margin-top: 30px;
             font-size: 0.75rem;
@@ -168,8 +187,8 @@
     <div class="container">
         <div class="light-card">
             
-            <div class="anim-container">
-                <dotlottie-player src="https://lottie.host/56176503-3c34-4007-b64f-53677404c06e/2sX6qQp5qj.json" background="transparent" speed="1" style="width: 100%; height: 100%;" loop autoplay></dotlottie-player>
+            <div class="logo-wrapper">
+                <img src="https://cdn-icons-png.flaticon.com/512/4712/4712038.png" alt="Robot Logo" class="logo-img">
             </div>
 
             <h1>AI Fact Genius</h1>
@@ -202,7 +221,7 @@
             </button>
 
             <div class="footer">
-                Pod: <span id="pod-name">{{ hostname }}</span> | Ver: 7.0 Light
+                Pod: <span id="pod-name">{{ hostname }}</span> | Ver: 8.0 Logo Fix
             </div>
         </div>
     </div>
@@ -218,7 +237,7 @@
             
             // UI Loading State
             btn.classList.add('loading');
-            btn.innerHTML = '<span>חושב...</span>';
+            btn.innerHTML = '<span>מעבד נתונים...</span>';
             factBox.style.opacity = '0.5';
             imgContainer.style.opacity = '0.5';
 
@@ -226,13 +245,20 @@
                 const response = await fetch(`/api/fact?lang=${lang}&category=${category}`);
                 const data = await response.json();
                 
-                // עדכון טקסט ותמונה
+                // עדכון טקסט
                 factBox.innerText = data.fact;
-                img.src = data.image;
-                imgContainer.style.display = 'block'; // הצגת התמונה
+                
+                // עדכון תמונה (רק אם הגיעה תמונה תקינה)
+                if (data.image) {
+                    img.src = data.image;
+                    img.onload = () => {
+                        imgContainer.style.display = 'block';
+                    };
+                }
+                
                 document.getElementById('pod-name').innerText = data.pod;
 
-                // טיפול בכיוון שפה
+                // טיפול בכיוון שפה (RTL לעברית)
                 if (lang === 'he') {
                     factBox.style.direction = 'rtl';
                     factBox.style.fontFamily = "'Rubik', sans-serif";
@@ -244,6 +270,7 @@
                 }
 
             } catch (e) {
+                console.error(e);
                 factBox.innerText = "שגיאת תקשורת. נסו שוב.";
             }
 
